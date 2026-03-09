@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senin İçin...</title>
+    <style>
+        body { 
+            background-color: #ffe6f2; /* Açık pembe arka plan */
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            overflow: hidden; 
+            font-family: 'Arial', sans-serif; 
+        }
+        
+        .envelope-wrapper { 
+            position: relative; 
+            cursor: pointer; 
+        }
+        
+        /* Zarfın gövdesi */
+        .envelope { 
+            width: 300px; 
+            height: 200px; 
+            background-color: #ff99cc; 
+            position: relative; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            box-shadow: 0 10px 25px rgba(255, 51, 133, 0.3); 
+        }
+        
+        /* Zarfın kapağı (üçgen kısım) */
+        .envelope::before { 
+            content: ""; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            border-top: 100px solid #ff66b2; 
+            border-right: 150px solid transparent; 
+            border-left: 150px solid transparent; 
+            z-index: 3; 
+            transition: transform 0.6s ease-in-out; 
+            transform-origin: top; 
+        }
+        
+        /* Zarf açılınca kapağın kalkması */
+        .envelope.open::before { 
+            transform: rotateX(180deg); 
+            z-index: 1; 
+        }
+        
+        /* Kalp Mühür */
+        .heart-seal { 
+            position: absolute; 
+            top: 75px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            font-size: 50px; 
+            z-index: 4; 
+            transition: opacity 0.3s; 
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .envelope.open .heart-seal { 
+            opacity: 0; 
+        }
+        
+        /* İçinden çıkan mektup */
+        .letter { 
+            position: absolute; 
+            bottom: 10px; 
+            width: 280px; 
+            height: 180px; 
+            background-color: #fffafc; 
+            z-index: 2; 
+            transition: transform 0.6s 0.3s ease-out; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            flex-direction: column; 
+            border-radius: 5px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .envelope.open .letter { 
+            transform: translateY(-120px); 
+            z-index: 4; 
+        }
+        
+        /* Çıkan İsim */
+        .name-text { 
+            font-size: 2.5em; 
+            color: #ff1a75; 
+            font-weight: bold; 
+            opacity: 0; 
+            transition: opacity 0.5s 0.8s; 
+            letter-spacing: 2px;
+        }
+        
+        .envelope.open .name-text { 
+            opacity: 1; 
+        }
+        
+        /* Etrafa saçılan kalplerin animasyonu */
+        .floating-heart { 
+            position: absolute; 
+            font-size: 24px; 
+            animation: floatUp 2.5s ease-out forwards; 
+            pointer-events: none; 
+            z-index: 5;
+        }
+        
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.5) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-400px) scale(1.5) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="envelope-wrapper" onclick="openEnvelope()">
+        <div class="envelope" id="envelope">
+            <div class="heart-seal">❤️</div>
+            <div class="letter">
+                <div class="name-text" id="targetName">NİSA</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // ARKADAŞLARIN İSİMLERİ BURADAN DEĞİŞTİRECEK
+        // ==========================================
+        const SEVGILI_ISMI = "NİSA";
+        // ==========================================
+        
+        document.getElementById('targetName').innerText = SEVGILI_ISMI;
+
+        let isOpen = false;
+
+        function openEnvelope() {
+            if (isOpen) return; // Sadece bir kere açılır
+            isOpen = true;
+            
+            const envelope = document.getElementById('envelope');
+            envelope.classList.add('open');
+            
+            // Kalp fışkırtma efekti (zamanlamalı)
+            for (let i = 0; i < 30; i++) {
+                setTimeout(createHeart, i * 80);
+            }
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.innerHTML = '💖'; // Kalp emojisini değiştirebilirsin
+            heart.classList.add('floating-heart');
+            
+            // Ekranın ortasından zarf hizasından rastgele konumlardan çıksın
+            const x = (Math.random() - 0.5) * 300; 
+            const y = (Math.random() - 0.5) * 50;
+            
+            heart.style.left = `calc(50% + ${x}px)`;
+            heart.style.top = `calc(50% + ${y}px)`;
+            
+            document.body.appendChild(heart);
+            
+            // Animasyon bitince DOM'u şişirmesin diye siliyoruz
+            setTimeout(() => {
+                heart.remove();
+            }, 2500);
+        }
+    </script>
+
+</body>
+</html>
