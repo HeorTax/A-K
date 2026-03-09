@@ -3,228 +3,446 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Senin İçin... ❤️</title>
+    <title>Sadece Senin İçin... ❤️🌹</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Parisienne&family=Poppins:wght@300;400;600&display=swap');
 
-        body { 
-            background-color: #fff5f7; /* Senin o tatlı arka plan */
-            font-family: 'Poppins', sans-serif;
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
-            overflow: hidden; 
-            position: relative;
+        :root {
+            --bg-color: #fff0f3;
+            --envelope-color: #ffb6c1;
+            --envelope-cap-color: #ff8fa3;
+            --seal-color: #ff1a75;
+            --text-color: #ff4d6d;
+            --parchment-color: #fffcf2;
         }
 
-        /* Arka planda uçuşan senin kalpler */
-        .bg-heart {
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden; /* Kaydırma çubuğu istemiyoruz */
+            background-color: var(--bg-color);
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1500px; /* 3D efekt için derinlik */
+        }
+
+        /* --- ARKA PLAN EFEKTLERİ --- */
+        #bokeh-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+        }
+        .bokeh {
             position: absolute;
-            color: #ff6b9a;
-            opacity: 0.3;
-            animation: floatBg 4s infinite ease-in-out;
-            z-index: 0;
+            background-color: rgba(255, 182, 193, 0.4);
+            border-radius: 50%;
+            filter: blur(10px);
+            animation: floatBokeh infinite linear;
+        }
+        @keyframes floatBokeh {
+            0% { transform: translateY(110vh) scale(0.5); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        /* Sürekli süzülen gül yaprakları */
+        .petal {
+            position: absolute;
+            background-color: #ff4d6d;
+            border-radius: 100% 0% 100% 0% / 100% 0% 100% 0% ; /* Yaprak şekli */
+            opacity: 0.8;
+            z-index: -1;
+            pointer-events: none;
+            animation: rainPetals infinite linear;
+        }
+        @keyframes rainPetals {
+            0% { transform: translateY(-10vh) rotate(0deg) translateX(0); }
+            25% { transform: translateY(25vh) rotate(90deg) translateX(15px); }
+            50% { transform: translateY(50vh) rotate(180deg) translateX(-15px); }
+            75% { transform: translateY(75vh) rotate(270deg) translateX(15px); }
+            100% { transform: translateY(110vh) rotate(360deg) translateX(0); }
+        }
+
+        /* --- BAŞLIK --- */
+        #main-title {
+            position: fixed;
+            top: 5vh;
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            color: #ff1a75;
+            text-shadow: 0 0 15px rgba(255, 26, 117, 0.3);
+            z-index: 5;
+            opacity: 1;
+            transition: opacity 1s;
+        }
+
+        /* --- ZARF MEKANİZMASI --- */
+        .envelope-wrapper {
+            position: relative;
+            cursor: pointer;
+            z-index: 10;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+        .envelope-wrapper:hover {
+            transform: scale(1.02) rotateY(5deg);
+        }
+
+        .envelope {
+            width: 350px;
+            height: 240px;
+            background-color: var(--envelope-color);
+            position: relative;
+            border-radius: 5px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            transform-style: preserve-3d;
+        }
+
+        /* Zarfın kapağı (üçgen) */
+        .envelope::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 0; height: 0;
+            border-top: 130px solid var(--envelope-cap-color);
+            border-right: 175px solid transparent;
+            border-left: 175px solid transparent;
+            z-index: 3;
+            transform-origin: top;
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            border-radius: 5px 5px 0 0;
+        }
+
+        /* Zarfın açılmış hali */
+        .envelope.open::before {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        /* Kalp Mühür */
+        .heart-seal {
+            position: absolute;
+            top: 95px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 60px;
+            color: var(--seal-color);
+            z-index: 4;
+            transition: opacity 0.4s, transform 0.4s;
+            text-shadow: 0 5px 15px rgba(255, 26, 117, 0.4);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); opacity: 1; }
+            50% { transform: translateX(-50%) scale(1.1); opacity: 0.9; }
+            100% { transform: translateX(-50%) scale(1); opacity: 1; }
+        }
+
+        .envelope.open .heart-seal {
+            opacity: 0;
+            transform: translateX(-50%) scale(0) rotate(180deg);
             pointer-events: none;
         }
 
-        @keyframes floatBg {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(10deg); }
-        }
-        
-        /* Zarf Konteyner */
-        .envelope-wrapper { 
-            position: relative; 
-            cursor: pointer; 
-            z-index: 10;
-        }
-        
-        /* Zarfın gövdesi (Senin renklerden) */
-        .envelope { 
-            width: 320px; 
-            height: 220px; 
-            background: linear-gradient(135deg, #ffcce0, #ffb6c1);
-            position: relative; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            border-radius: 5px;
-            box-shadow: 0 15px 35px rgba(255, 182, 193, 0.6); 
-            transition: transform 0.3s ease;
+        /* --- MEKTUP PARŞÖMENİ --- */
+        #letter-parchment {
+            position: fixed; /* Ekranda merkeze kitlensin açılınca */
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0); /* Başta gizli ve küçük */
+            width: 85vw; /* Geniş ekran */
+            max-width: 700px;
+            height: 80vh; /* Yüksek ekran */
+            background-color: var(--parchment-color);
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>'); /* Kağıt dokusu */
+            z-index: 100;
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.3), 0 0 10px rgba(255, 77, 109, 0.2) inset;
+            overflow-y: auto; /* Çok uzunsa kaydırılsın */
+            padding: 50px;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.8s;
+            display: flex;
+            flex-direction: column;
+            border: 15px solid transparent;
+            border-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50"><path d="M25,0 L28,15 L45,10 L30,22 L48,35 L30,35 L35,50 L25,38 L15,50 L20,35 L2,35 L20,22 L5,10 L22,15 Z" fill="%23ff8fa3" opacity="0.5"/></svg>') 30 round; /* Gül süslü kenarlık */
         }
 
-        .envelope-wrapper:hover .envelope {
-            transform: translateY(-5px);
-        }
-        
-        /* Zarfın kapağı */
-        .envelope::before { 
-            content: ""; 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            border-top: 110px solid #ff6b9a; 
-            border-right: 160px solid transparent; 
-            border-left: 160px solid transparent; 
-            z-index: 3; 
-            transition: transform 0.6s ease-in-out; 
-            transform-origin: top; 
-        }
-        
-        .envelope.open::before { 
-            transform: rotateX(180deg); 
-            z-index: 1; 
-        }
-        
-        /* Kalp Mühür */
-        .heart-seal { 
-            position: absolute; 
-            top: 85px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            font-size: 50px; 
-            z-index: 4; 
-            transition: opacity 0.3s, transform 0.3s; 
-            text-shadow: 2px 2px 5px rgba(255, 107, 154, 0.4);
-            color: #ff1a75;
+        #letter-parchment.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
         }
 
-        .envelope-wrapper:hover .heart-seal {
-            transform: translateX(-50%) scale(1.1);
+        /* Kapatma butonu */
+        #close-letter {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: none; border: none;
+            font-size: 30px; color: #ff8fa3;
+            cursor: pointer;
+            transition: color 0.3s;
         }
-        
-        .envelope.open .heart-seal { 
-            opacity: 0; 
+        #close-letter:hover { color: #ff1a75; }
+
+        /* Mektup Metin Stilleri */
+        .letter-header {
+            font-family: 'Parisienne', cursive;
+            font-size: 3rem;
+            color: #d90429;
+            margin-bottom: 30px;
+            text-align: center;
         }
-        
-        /* İçinden çıkan mektup */
-        .letter { 
-            position: absolute; 
-            bottom: 10px; 
-            width: 290px; 
-            height: 190px; 
-            background: linear-gradient(135deg, #fff5f7, #ffe0ec);
-            z-index: 2; 
-            transition: transform 0.6s 0.3s ease-out; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            flex-direction: column; 
-            border-radius: 15px; 
-            box-shadow: 0 5px 15px rgba(255, 107, 154, 0.2);
-        }
-        
-        .envelope.open .letter { 
-            transform: translateY(-130px); 
-            z-index: 4; 
-        }
-        
-        /* Çıkan İsim (Senin Dancing Script fontu) */
-        .name-text { 
+
+        .letter-body {
             font-family: 'Dancing Script', cursive;
-            font-size: 3.5rem; 
-            color: #ff6b9a; 
-            font-weight: 700; 
-            opacity: 0; 
-            transition: opacity 0.5s 0.8s; 
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            font-size: 2rem;
+            line-height: 1.6;
+            color: #333;
+            flex-grow: 1;
         }
-        
-        .envelope.open .name-text { 
-            opacity: 1; 
+
+        .letter-footer {
+            font-family: 'Parisienne', cursive;
+            font-size: 2.5rem;
+            color: #d90429;
+            text-align: right;
+            margin-top: 40px;
         }
-        
-        /* Zarf açılınca patlayan kalpler */
-        .burst-heart { 
-            position: absolute; 
-            font-size: 24px; 
-            animation: floatUp 2s ease-out forwards; 
-            pointer-events: none; 
-            z-index: 15;
+
+        /* --- PATLAMA EFEKTLERİ --- */
+        .burst-heart, .burst-rose {
+            position: absolute;
+            pointer-events: none;
+            z-index: 50;
+            animation: burst 2.5s ease-out forwards;
         }
-        
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(0.5) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-300px) scale(2) rotate(360deg); opacity: 0; }
+
+        @keyframes burst {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 1; }
+            100% { transform: translate(var(--tw-x), var(--tw-y)) scale(var(--tw-s)) rotate(var(--tw-r)); opacity: 0; }
+        }
+
+        /* --- MOBİL UYUMLULUK --- */
+        @media (max-width: 600px) {
+            #main-title { font-size: 2.5rem; top: 2vh; }
+            .envelope { width: 280px; height: 190px; }
+            .envelope::before { border-top-width: 100px; border-right-width: 140px; border-left-width: 140px; }
+            .heart-seal { font-size: 50px; top: 70px; }
+            #letter-parchment { padding: 30px; width: 95vw; height: 90vh; border-width: 10px; }
+            .letter-header { font-size: 2rem; }
+            .letter-body { font-size: 1.4rem; }
+            .letter-footer { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="envelope-wrapper" onclick="openEnvelope()">
+    <div id="bokeh-container"></div>
+
+    <h1 id="main-title">Sadece Senin İçin...</h1>
+
+    <div class="envelope-wrapper" id="wrapper" onclick="openEnvelope()">
         <div class="envelope" id="envelope">
             <div class="heart-seal">❤️</div>
-            <div class="letter">
-                <div class="name-text" id="targetName">Nisa</div>
-            </div>
         </div>
+    </div>
+
+    <div id="letter-parchment">
+        <button id="close-letter" onclick="closeLetter()">✕</button>
+        <div class="letter-header" id="letterGreeting"></div>
+        <div class="letter-body" id="letterBody"></div>
+        <div class="letter-footer" id="letterClosing"></div>
     </div>
 
     <script>
         // ==========================================
-        // İSİM BURADAN DEĞİŞTİRİLECEK (Sadece İlk Harfi Büyük Yazmak Daha Şık Durur)
-        // ==========================================
-        const SEVGILI_ISMI = "Nisa";
+        // AGALARIN İÇERİĞİ DEĞİŞTİRECEĞİ BÖLÜM (PERFORMANSI SİKTİR ET, GÖSELLİK ÖNEMLİ)
         // ==========================================
         
-        document.getElementById('targetName').innerText = SEVGILI_ISMI;
+        // 1. Hitap Kısmı
+        const HİTAP = "Benim Güzel Nisa'm,";
 
-        // Arka plana yavaş uçuşan kalpleri ekleme (Senin koddan)
-        function createBgHearts() {
-            const container = document.body;
+        // 2. Mektup Metni (Burası epey uzun olabilir. Satır başları için \n kullanabilirsin ama HTML <br> daha iyidir.)
+        // Daktilo efektiyle yazılacak.
+        const MEKTUP_METNİ = `
+            Hayatıma girdiğin günden beri, dünyamın renkleri değişti. \n\n
+            Eskiden sıradan gelen her an, şimdi seninle anlam kazanıyor. \n
+            Gülüşün, gökyüzündeki en parlak yıldızdan bile daha aydınlık benim için. \n\n
+            Bu mektubu sana sevgimi kelimelere dökmek için yazıyorum, gerçi hangi kelime seni anlatmaya yeter, onu da bilmiyorum. \n
+            Sen benim başıma gelen en güzel şey, kalbimin en tatlı ağrısısın. \n\n
+            Her sabah seninle uyanma hayali bile içimi ısıtmaya yetiyor. İyi ki varsın, iyi ki benimsin. \n\n
+            Seni seviyorum, her şeyden çok...
+        `;
+
+        // 3. İmza Kısmı
+        const İMZA = "Daima Senin, Elif";
+
+        // ==========================================
+        // EFEKT PARAMETRELERİ (DAHA FAZLA KAOS İÇİN ARTTIRIN)
+        // ==========================================
+        const SUREKLI_GUL_SAYISI = 50; // Arka planda sürekli uçuşan gül yaprağı sayısı
+        const PATLAMA_KALP_SAYISI = 60; // Zarf açılınca fırlayan kalp sayısı
+        const PATLAMA_GUL_SAYISI = 40; // Zarf açılınca fırlayan gül sayısı
+        const DAKTILO_HIZI = 50; // Milisaniye cinsinden harf yazma hızı (düşük = daha hızlı)
+
+        // ==========================================
+        // KODUN ANA MOTORU (DOKUNMAYIN, BOZULURSA KIZ KIZAR)
+        // ==========================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initBackground();
+        });
+
+        // 1. Arka Plan Bokeh ve Gül Yağmuru
+        function initBackground() {
+            // Bokehler
+            const bokehContainer = document.getElementById('bokeh-container');
             for (let i = 0; i < 20; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'bg-heart';
-                heart.innerHTML = '❤️';
-                
-                heart.style.left = `${Math.random() * 100}%`;
-                heart.style.top = `${Math.random() * 100}%`;
-                heart.style.fontSize = `${0.5 + Math.random() * 1.5}rem`;
-                heart.style.animationDelay = `${Math.random() * 5}s`;
-                
-                container.appendChild(heart);
+                const bokeh = document.createElement('div');
+                bokeh.className = 'bokeh';
+                const size = Math.random() * 50 + 10;
+                bokeh.style.width = `${size}px`;
+                bokeh.style.height = `${size}px`;
+                bokeh.style.left = `${Math.random() * 100}%`;
+                bokeh.style.top = `${Math.random() * 100}%`;
+                bokeh.style.animationDuration = `${Math.random() * 10 + 5}s`;
+                bokeh.style.animationDelay = `${Math.random() * 5}s`;
+                bokehContainer.appendChild(bokeh);
+            }
+
+            // Sürekli Gül Yaprakları (Performans canavarı)
+            for (let i = 0; i < SUREKLI_GUL_SAYISI; i++) {
+                createContinuousPetal();
             }
         }
-        createBgHearts();
 
-        // Zarf Açma Mekaniği
+        function createContinuousPetal() {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            
+            // Rastgele renk tonları (kırmızı/pembe)
+            const colors = ['#ff4d6d', '#ff758f', '#ff8fa3', '#c9184a'];
+            petal.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            const size = Math.random() * 15 + 10;
+            petal.style.width = `${size}px`;
+            petal.style.height = `${size}px`;
+            petal.style.left = `${Math.random() * 100}%`;
+            
+            const duration = Math.random() * 10 + 5;
+            petal.style.animationDuration = `${duration}s`;
+            petal.style.animationDelay = `${Math.random() * 5}s`;
+            
+            document.body.appendChild(petal);
+
+            // Animasyon bitince temizle ve yenisini ekle
+            setTimeout(() => {
+                petal.remove();
+                createContinuousPetal();
+            }, (duration + 5) * 1000);
+        }
+
+        // 2. Zarf Açma ve Patlama
         let isOpen = false;
 
         function openEnvelope() {
-            if (isOpen) return; 
+            if (isOpen) return;
             isOpen = true;
-            
+
             const envelope = document.getElementById('envelope');
-            envelope.classList.add('open');
+            const title = document.getElementById('main-title');
             
-            // Zarf açıldığında patlayan kalpler
-            for (let i = 0; i < 25; i++) {
-                setTimeout(createBurstHeart, i * 60);
+            envelope.classList.add('open');
+            title.style.opacity = '0'; // Başlığı gizle
+
+            // Hayvan gibi patlama efekti
+            for (let i = 0; i < PATLAMA_KALP_SAYISI; i++) {
+                setTimeout(() => createBurstItem('❤️', 'burst-heart'), i * 15);
             }
+            for (let i = 0; i < PATLAMA_GUL_SAYISI; i++) {
+                // Farklı gül/çiçek emojileri
+                const roses = ['🌹', '🌸', '🌺'];
+                setTimeout(() => createBurstItem(roses[Math.floor(Math.random()*roses.length)], 'burst-rose'), i * 25);
+            }
+
+            // Mektubu getir (Zamanlamalı)
+            setTimeout(showLetter, 1500);
         }
 
-        function createBurstHeart() {
-            const heart = document.createElement('div');
-            // Farklı kalp emojileriyle daha zengin bir patlama
-            const hearts = ['❤️', '💖', '💕', '💗'];
-            heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)]; 
-            heart.classList.add('burst-heart');
+        function createBurstItem(content, className) {
+            const item = document.createElement('div');
+            item.className = className;
+            item.innerHTML = content;
             
-            const x = (Math.random() - 0.5) * 400; 
-            const y = (Math.random() - 0.5) * 100;
+            // Zarfın ortasından başla
+            const wrapper = document.getElementById('wrapper');
+            const rect = wrapper.getBoundingClientRect();
+            const startX = rect.left + rect.width / 2;
+            const startY = rect.top + rect.height / 2;
             
-            heart.style.left = `calc(50% + ${x}px)`;
-            heart.style.top = `calc(50% + ${y}px)`;
-            
-            document.body.appendChild(heart);
-            
-            setTimeout(() => {
-                heart.remove();
-            }, 2000);
+            item.style.left = `${startX}px`;
+            item.style.top = `${startY}px`;
+            item.style.fontSize = `${Math.random() * 20 + 20}px`;
+
+            // Rastgele fırlama yönleri (CSS Değişkenleri ile)
+            const tx = (Math.random() - 0.5) * 1000; // X yönü (geniş)
+            const ty = (Math.random() - 1) * 800;   // Y yönü (yukarı doğru)
+            const ts = Math.random() * 2 + 0.5;      // Ölçeklenme
+            const tr = (Math.random() - 0.5) * 720;  // Dönüş
+
+            item.style.setProperty('--tw-x', `${tx}px`);
+            item.style.setProperty('--tw-y', `${ty}px`);
+            item.style.setProperty('--tw-s', ts);
+            item.style.setProperty('--tw-r', `${tr}deg`);
+
+            document.body.appendChild(item);
+
+            // Temizle
+            setTimeout(() => item.remove(), 2500);
+        }
+
+        // 3. Mektup Gösterimi ve Daktilo Efekti
+        function showLetter() {
+            const parchment = document.getElementById('letter-parchment');
+            parchment.classList.add('show');
+
+            // Hitap ve İmzayı direkt koy
+            document.getElementById('letterGreeting').innerText = HİTAP;
+            document.getElementById('letterClosing').innerText = İMZA;
+
+            // Mektup gövdesini daktilo ile yaz
+            typeWriter(MEKTUP_METNİ.replace(/\n/g, '<br>'), 'letterBody', DAKTILO_HIZI);
+        }
+
+        function typeWriter(text, elementId, speed) {
+            let i = 0;
+            const element = document.getElementById(elementId);
+            element.innerHTML = ""; // Önce temizle
+
+            function type() {
+                if (i < text.length) {
+                    // HTML taglarını tek seferde geçmek için kontrol ( <br> gibi)
+                    if (text.charAt(i) === '<') {
+                        const tagEnd = text.indexOf('>', i);
+                        element.innerHTML += text.substring(i, tagEnd + 1);
+                        i = tagEnd + 1;
+                    } else {
+                        element.innerHTML += text.charAt(i);
+                        i++;
+                    }
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        function closeLetter() {
+            const parchment = document.getElementById('letter-parchment');
+            parchment.classList.remove('show');
+            // İstenirse sayfa yenilenebilir veya zarf kapatılabilir
         }
     </script>
-
 </body>
 </html>
