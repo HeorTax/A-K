@@ -3,51 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Senin İçin...</title>
+    <title>Senin İçin... ❤️</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
         body { 
-            background-color: #ffe6f2; /* Açık pembe arka plan */
+            background-color: #fff5f7; /* Senin o tatlı arka plan */
+            font-family: 'Poppins', sans-serif;
             display: flex; 
             justify-content: center; 
             align-items: center; 
             height: 100vh; 
             margin: 0; 
             overflow: hidden; 
-            font-family: 'Arial', sans-serif; 
+            position: relative;
+        }
+
+        /* Arka planda uçuşan senin kalpler */
+        .bg-heart {
+            position: absolute;
+            color: #ff6b9a;
+            opacity: 0.3;
+            animation: floatBg 4s infinite ease-in-out;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes floatBg {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
         }
         
+        /* Zarf Konteyner */
         .envelope-wrapper { 
             position: relative; 
             cursor: pointer; 
+            z-index: 10;
         }
         
-        /* Zarfın gövdesi */
+        /* Zarfın gövdesi (Senin renklerden) */
         .envelope { 
-            width: 300px; 
-            height: 200px; 
-            background-color: #ff99cc; 
+            width: 320px; 
+            height: 220px; 
+            background: linear-gradient(135deg, #ffcce0, #ffb6c1);
             position: relative; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            box-shadow: 0 10px 25px rgba(255, 51, 133, 0.3); 
+            border-radius: 5px;
+            box-shadow: 0 15px 35px rgba(255, 182, 193, 0.6); 
+            transition: transform 0.3s ease;
+        }
+
+        .envelope-wrapper:hover .envelope {
+            transform: translateY(-5px);
         }
         
-        /* Zarfın kapağı (üçgen kısım) */
+        /* Zarfın kapağı */
         .envelope::before { 
             content: ""; 
             position: absolute; 
             top: 0; 
             left: 0; 
-            border-top: 100px solid #ff66b2; 
-            border-right: 150px solid transparent; 
-            border-left: 150px solid transparent; 
+            border-top: 110px solid #ff6b9a; 
+            border-right: 160px solid transparent; 
+            border-left: 160px solid transparent; 
             z-index: 3; 
             transition: transform 0.6s ease-in-out; 
             transform-origin: top; 
         }
         
-        /* Zarf açılınca kapağın kalkması */
         .envelope.open::before { 
             transform: rotateX(180deg); 
             z-index: 1; 
@@ -56,13 +81,18 @@
         /* Kalp Mühür */
         .heart-seal { 
             position: absolute; 
-            top: 75px; 
+            top: 85px; 
             left: 50%; 
             transform: translateX(-50%); 
             font-size: 50px; 
             z-index: 4; 
-            transition: opacity 0.3s; 
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            transition: opacity 0.3s, transform 0.3s; 
+            text-shadow: 2px 2px 5px rgba(255, 107, 154, 0.4);
+            color: #ff1a75;
+        }
+
+        .envelope-wrapper:hover .heart-seal {
+            transform: translateX(-50%) scale(1.1);
         }
         
         .envelope.open .heart-seal { 
@@ -73,50 +103,51 @@
         .letter { 
             position: absolute; 
             bottom: 10px; 
-            width: 280px; 
-            height: 180px; 
-            background-color: #fffafc; 
+            width: 290px; 
+            height: 190px; 
+            background: linear-gradient(135deg, #fff5f7, #ffe0ec);
             z-index: 2; 
             transition: transform 0.6s 0.3s ease-out; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             flex-direction: column; 
-            border-radius: 5px; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 15px; 
+            box-shadow: 0 5px 15px rgba(255, 107, 154, 0.2);
         }
         
         .envelope.open .letter { 
-            transform: translateY(-120px); 
+            transform: translateY(-130px); 
             z-index: 4; 
         }
         
-        /* Çıkan İsim */
+        /* Çıkan İsim (Senin Dancing Script fontu) */
         .name-text { 
-            font-size: 2.5em; 
-            color: #ff1a75; 
-            font-weight: bold; 
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem; 
+            color: #ff6b9a; 
+            font-weight: 700; 
             opacity: 0; 
             transition: opacity 0.5s 0.8s; 
-            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
         
         .envelope.open .name-text { 
             opacity: 1; 
         }
         
-        /* Etrafa saçılan kalplerin animasyonu */
-        .floating-heart { 
+        /* Zarf açılınca patlayan kalpler */
+        .burst-heart { 
             position: absolute; 
             font-size: 24px; 
-            animation: floatUp 2.5s ease-out forwards; 
+            animation: floatUp 2s ease-out forwards; 
             pointer-events: none; 
-            z-index: 5;
+            z-index: 15;
         }
         
         @keyframes floatUp {
             0% { transform: translateY(0) scale(0.5) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-400px) scale(1.5) rotate(360deg); opacity: 0; }
+            100% { transform: translateY(-300px) scale(2) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
@@ -126,53 +157,72 @@
         <div class="envelope" id="envelope">
             <div class="heart-seal">❤️</div>
             <div class="letter">
-                <div class="name-text" id="targetName">KADİR</div>
+                <div class="name-text" id="targetName">Nisa</div>
             </div>
         </div>
     </div>
 
     <script>
         // ==========================================
-        // ARKADAŞLARIN İSİMLERİ BURADAN DEĞİŞTİRECEK
+        // İSİM BURADAN DEĞİŞTİRİLECEK (Sadece İlk Harfi Büyük Yazmak Daha Şık Durur)
         // ==========================================
-        const SEVGILI_ISMI = "NİSA";
+        const SEVGILI_ISMI = "Nisa";
         // ==========================================
         
         document.getElementById('targetName').innerText = SEVGILI_ISMI;
 
+        // Arka plana yavaş uçuşan kalpleri ekleme (Senin koddan)
+        function createBgHearts() {
+            const container = document.body;
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'bg-heart';
+                heart.innerHTML = '❤️';
+                
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.top = `${Math.random() * 100}%`;
+                heart.style.fontSize = `${0.5 + Math.random() * 1.5}rem`;
+                heart.style.animationDelay = `${Math.random() * 5}s`;
+                
+                container.appendChild(heart);
+            }
+        }
+        createBgHearts();
+
+        // Zarf Açma Mekaniği
         let isOpen = false;
 
         function openEnvelope() {
-            if (isOpen) return; // Sadece bir kere açılır
+            if (isOpen) return; 
             isOpen = true;
             
             const envelope = document.getElementById('envelope');
             envelope.classList.add('open');
             
-            // Kalp fışkırtma efekti (zamanlamalı)
-            for (let i = 0; i < 30; i++) {
-                setTimeout(createHeart, i * 80);
+            // Zarf açıldığında patlayan kalpler
+            for (let i = 0; i < 25; i++) {
+                setTimeout(createBurstHeart, i * 60);
             }
         }
 
-        function createHeart() {
+        function createBurstHeart() {
             const heart = document.createElement('div');
-            heart.innerHTML = '💖'; // Kalp emojisini değiştirebilirsin
-            heart.classList.add('floating-heart');
+            // Farklı kalp emojileriyle daha zengin bir patlama
+            const hearts = ['❤️', '💖', '💕', '💗'];
+            heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)]; 
+            heart.classList.add('burst-heart');
             
-            // Ekranın ortasından zarf hizasından rastgele konumlardan çıksın
-            const x = (Math.random() - 0.5) * 300; 
-            const y = (Math.random() - 0.5) * 50;
+            const x = (Math.random() - 0.5) * 400; 
+            const y = (Math.random() - 0.5) * 100;
             
             heart.style.left = `calc(50% + ${x}px)`;
             heart.style.top = `calc(50% + ${y}px)`;
             
             document.body.appendChild(heart);
             
-            // Animasyon bitince DOM'u şişirmesin diye siliyoruz
             setTimeout(() => {
                 heart.remove();
-            }, 2500);
+            }, 2000);
         }
     </script>
 
